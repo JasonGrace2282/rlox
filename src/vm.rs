@@ -1,15 +1,39 @@
 use crate::chunk::Chunk;
 use crate::opcode::Operation;
+use crate::value::Value;
+
+use std::error::Error;
+use std::fmt;
+
+macro_rules! binary_op {
+    ($self:ident, $op:tt) => {{
+        let top1 = $self.pop();
+        let top2 = $self.pop();
+        $self.push(top1 $op top2);
+    }};
+}
+
 
 #[derive(Debug)]
 pub enum RuntimeError {
     CompileError,
+    InternalError,
     RuntimeError
 }
 
+impl Error for RuntimeError {}
+
+impl fmt::Display for RuntimeError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "Oh no, something bad went down! {:#?}", self)
+    }
+}
+
+#[derive(Debug)]
 pub struct VM {
     code: Chunk,
     ip: u32,
+    stack: Vec<Value>,
 }
 
 
@@ -19,6 +43,7 @@ impl VM {
         Self {
             code,
             ip: 0,
+            stack: Vec::with_capacity(256),
         }
     }
 
@@ -26,14 +51,34 @@ impl VM {
     {
         loop {
             if let Some(op) = self.code.get_operation(self.ip as usize) {
+                println!("======= STACK =======");
+                println!("{:#?}", self.stack);
+                println!("=====================");
                 match op {
                     Operation::Return => return Ok(()),
-                    Operation::Constant(c) => println!("Constant {c}"),
+                    Operation::Constant(c) => self.push(c),
+                    Operation::Negate => {
+                        let temp = -self.pop();
+                        self.push(temp);
+                    },
+                    Operation::Add => binary_op!(self, +),
+                    Operation::Subtract => binary_op!(self, -),
+                    Operation::Multiply => binary_op!(self, *),
+                    Operation::Divide => binary_op!(self, /),
                 };
             } else {
                 return Ok(());
             }
             self.ip+=1;
         }
+    }
+
+    fn push(&mut self, v: Value)
+    {
+        self.stack.push(v);
+    }
+
+    fn pop(&mut self) -> Value {
+        self.stack.pop().expect("Empty stack")
     }
 }

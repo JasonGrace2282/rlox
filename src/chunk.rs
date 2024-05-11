@@ -1,4 +1,5 @@
-use crate::opcode::{Operation, Value};
+use crate::opcode::Operation;
+use crate::value::Value;
 
 
 #[derive(Debug)]
