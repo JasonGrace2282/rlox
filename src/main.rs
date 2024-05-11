@@ -8,7 +8,8 @@ fn main() {
     chunk.write(Operation::Negate, 1);
     chunk.add_constant(0.5, 2);
     chunk.write(Operation::Multiply, 2);
-    chunk.write(Operation::Divide, 3)
+    chunk.add_constant(2 as f32, 3);
+    chunk.write(Operation::Divide, 3);
     let mut vm = VM::new(chunk);
     vm.interpret().expect("yup");
     dbg!(vm);

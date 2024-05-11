@@ -9,7 +9,9 @@ macro_rules! binary_op {
     ($self:ident, $op:tt) => {{
         let top1 = $self.pop();
         let top2 = $self.pop();
-        $self.push(top1 $op top2);
+        // Do it in reverse so that division
+        // and subtraction happen correctly
+        $self.push(top2 $op top1);
     }};
 }
 
