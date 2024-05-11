@@ -6,6 +6,12 @@ pub struct ValueArray {
 }
 
 
+impl Default for ValueArray {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl ValueArray {
     pub fn new() -> Self
     {
@@ -26,6 +32,12 @@ pub struct Chunk {
     code: Vec<Operation>,
     constants: Vec<Value>,
     lines: Vec<u32>,
+}
+
+impl Default for Chunk {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl Chunk {
@@ -60,5 +72,9 @@ impl Chunk {
 
     pub fn len(&self) -> usize {
         self.code.len()
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.code.is_empty()
     }
 }
