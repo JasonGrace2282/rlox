@@ -1,12 +1,10 @@
 use crate::opcode::Operation;
 use crate::value::Value;
 
-
 #[derive(Debug)]
 pub struct ValueArray {
     array: Vec<Operation>,
 }
-
 
 impl Default for ValueArray {
     fn default() -> Self {
@@ -15,19 +13,14 @@ impl Default for ValueArray {
 }
 
 impl ValueArray {
-    pub fn new() -> Self
-    {
-        Self {
-            array: Vec::new(),
-        }
+    pub fn new() -> Self {
+        Self { array: Vec::new() }
     }
 
-    pub fn write_value(&mut self, op: Operation)
-    {
+    pub fn write_value(&mut self, op: Operation) {
         self.array.push(op);
     }
 }
-
 
 #[derive(Debug)]
 pub struct Chunk {
@@ -43,8 +36,7 @@ impl Default for Chunk {
 }
 
 impl Chunk {
-    pub fn new() -> Self
-    {
+    pub fn new() -> Self {
         Self {
             code: Vec::new(),
             constants: Vec::new(),
@@ -59,15 +51,13 @@ impl Chunk {
 
     /// Adds a constant, and returns an integer pointing to the index
     /// of the constant in the Vector constants
-    pub fn add_constant(&mut self, value: Value, line: u32) -> usize
-    {
+    pub fn add_constant(&mut self, value: Value, line: u32) -> usize {
         self.constants.push(value);
         self.write(Operation::Constant(value), line);
         self.constants.len() - 1
     }
 
-    pub fn get_operation(&self, line: usize) -> Option<Operation>
-    {
+    pub fn get_operation(&self, line: usize) -> Option<Operation> {
         // self.code: Vec<Operation>
         self.code.get(line).copied()
     }

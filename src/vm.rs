@@ -15,12 +15,11 @@ macro_rules! binary_op {
     }};
 }
 
-
 #[derive(Debug)]
 pub enum RuntimeError {
     CompileError,
     InternalError,
-    RuntimeError
+    RuntimeError,
 }
 
 impl Error for RuntimeError {}
@@ -38,10 +37,8 @@ pub struct VM {
     stack: Vec<Value>,
 }
 
-
 impl VM {
-    pub fn new(code: Chunk) -> Self
-    {
+    pub fn new(code: Chunk) -> Self {
         Self {
             code,
             ip: 0,
@@ -49,8 +46,7 @@ impl VM {
         }
     }
 
-    pub fn interpret(&mut self) -> Result<(), RuntimeError>
-    {
+    pub fn interpret(&mut self) -> Result<(), RuntimeError> {
         loop {
             if let Some(op) = self.code.get_operation(self.ip as usize) {
                 println!("======= STACK =======");
@@ -62,7 +58,7 @@ impl VM {
                     Operation::Negate => {
                         let temp = -self.pop();
                         self.push(temp);
-                    },
+                    }
                     Operation::Add => binary_op!(self, +),
                     Operation::Subtract => binary_op!(self, -),
                     Operation::Multiply => binary_op!(self, *),
@@ -71,12 +67,11 @@ impl VM {
             } else {
                 return Ok(());
             }
-            self.ip+=1;
+            self.ip += 1;
         }
     }
 
-    fn push(&mut self, v: Value)
-    {
+    fn push(&mut self, v: Value) {
         self.stack.push(v);
     }
 
