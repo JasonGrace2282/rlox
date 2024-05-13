@@ -5,9 +5,7 @@ use std::{
     process
 };
 
-use lox::chunk;
-use lox::opcode::Operation;
-use lox::vm::VM;
+use lox::scanner;
 
 fn main() {
     // let mut chunk = chunk::Chunk::new();
@@ -43,22 +41,22 @@ fn repl()
         if codeline == "exit" {
             process::exit(0);
         }
-        run_code(codeline);
+        run_code(codeline).unwrap_or_else(|e| eprintln!("{}", e));
     }
 }
 
 fn run_file(file: &String)
 {
     match fs::read_to_string(file) {
-        Ok(c) => return run_code(c),
+        Ok(c) => run_code(c).unwrap_or_else(|e| eprintln!("{}", e)),
         Err(e) => {
-            eprintln!("An error occured with accessing the file: {e}");
+            eprintln!("An error occured with accessing the file: {}", e);
             process::exit(1);
         }
     };
 }
 
-fn run_code(code: String)
+fn run_code(code: String) -> Result<(), &'static str>
 {
-    println!("{}", code);
+    scanner::compile(code)
 }
